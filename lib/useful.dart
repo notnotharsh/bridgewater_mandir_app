@@ -37,6 +37,7 @@ Map<String, dynamic> mergeMaps(Map<String, dynamic> map1, Map<String, dynamic> m
       }
     }
   }
+  return merged;
 }
 
 Future<String> localPath() async {

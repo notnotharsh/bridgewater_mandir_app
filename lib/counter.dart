@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flushbar/flushbar.dart';
+import 'package:flutter/services.dart';
 
 import 'useful.dart';
 
@@ -14,24 +15,25 @@ class Counter extends StatefulWidget {
 
 class CounterState extends State<Counter> {
   GlobalKey scaffold = GlobalKey();
+  Map<String, dynamic> localIDs;
   Future<void> downloadIfAble() async {
     ConnectivityResult connectivity = await Connectivity().checkConnectivity();
     bool wifi = connectivity == ConnectivityResult.wifi;
+    String localJSONString = await readText('ids', 'titles.json');
+    var localJSON = jsonDecode(localJSONString);
     if (wifi) {
-      String localJSONString = await readText('ids', 'titles.json');
       String globalJSONString = await makeGetRequest('https://api.myjson.com/bins/iobco');
-      var localJSON = jsonDecode(localJSONString);
       var globalJSON = jsonDecode(globalJSONString);
       var mergedJSON;
       if (localJSON == null) {
         writeText('ids', 'titles.json', globalJSONString, false);
+        localIDs = globalJSON;
       } else {
-        print("local: " + localJSON.toString());
-        print("global: " + globalJSON.toString());
         mergedJSON = mergeMaps(localJSON, globalJSON);
+        localIDs = mergedJSON;
         String mergedJSONString = jsonEncode(mergedJSON);
         writeText('ids', 'titles.json', mergedJSONString, false);
-        makePutRequest('https://api.myjson.com/bins/1bw0b4', mergedJSONString);
+        makePutRequest('https://api.myjson.com/bins/iobco', mergedJSONString);
       }
       Flushbar(
           title:  'Connected to Wi-Fi',
@@ -40,6 +42,15 @@ class CounterState extends State<Counter> {
           icon: IconTheme(data: IconThemeData(color: Color(0xFF209020)), child: Icon(Icons.check_circle))
       ).show(scaffold.currentContext);
     } else {
+      if (localJSON == null) {
+        String localJSONBackupString = await rootBundle.loadString('assets/backup_base.json');
+        var localJSONBackup = jsonDecode(localJSONBackupString);
+        localIDs = localJSONBackup;
+        writeText('ids', 'titles.json', localJSONBackupString, false);
+      } else {
+        writeText('ids', 'titles.json', localJSONString, false);
+        localIDs = localJSON;
+      }
       Flushbar(
           title:  'Not connected to Wi-Fi',
           message:  'Will update ID map later',
@@ -57,5 +68,4 @@ class CounterState extends State<Counter> {
       key: scaffold,
       backgroundColor: Colors.transparent,
     );
-  }
-}
+  }}
