@@ -17,9 +17,9 @@ List<String> mergeLists(var list1, var list2) {
   return merged;
 }
 
-Map<String, List<String>> mergeMaps(var map1, var map2) {
-  var merged = {};
-  List<String> mergedKeys = mergeLists(map1.keys, map2.keys);
+Map<String, dynamic> mergeMaps(Map<String, dynamic> map1, Map<String, dynamic> map2) {
+  Map<String, dynamic> merged = {};
+  var mergedKeys = mergeLists(map1.keys, map2.keys);
   for (String i in mergedKeys) {
     bool in1 = map1.containsKey(i);
     bool in2 = map2.containsKey(i);

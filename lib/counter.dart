@@ -19,17 +19,20 @@ class CounterState extends State<Counter> {
     bool wifi = connectivity == ConnectivityResult.wifi;
     if (wifi) {
       String localJSONString = await readText('ids', 'titles.json');
-      String globalJSONString = await makeGetRequest('https://api.myjson.com/bins/1bw0b4');
-      if (localJSONString == '') {
-        writeText('ids', 'titles.json', '{}', false);
-      }
+      String globalJSONString = await makeGetRequest('https://api.myjson.com/bins/iobco');
       var localJSON = jsonDecode(localJSONString);
       var globalJSON = jsonDecode(globalJSONString);
-      print("yaaaa " + localJSON);
-      var mergedJSON = mergeMaps(localJSON, globalJSON);
-      String mergedJSONString = jsonEncode(mergedJSON);
-      writeText('ids', 'titles.json', mergedJSONString, false);
-      makePutRequest('https://api.myjson.com/bins/1bw0b4', mergedJSONString);
+      var mergedJSON;
+      if (localJSON == null) {
+        writeText('ids', 'titles.json', globalJSONString, false);
+      } else {
+        print("local: " + localJSON.toString());
+        print("global: " + globalJSON.toString());
+        mergedJSON = mergeMaps(localJSON, globalJSON);
+        String mergedJSONString = jsonEncode(mergedJSON);
+        writeText('ids', 'titles.json', mergedJSONString, false);
+        makePutRequest('https://api.myjson.com/bins/1bw0b4', mergedJSONString);
+      }
       Flushbar(
           title:  'Connected to Wi-Fi',
           message:  'Updating ID map',
