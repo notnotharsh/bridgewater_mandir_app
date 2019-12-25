@@ -15,25 +15,37 @@ class Counter extends StatefulWidget {
 
 class CounterState extends State<Counter> {
   GlobalKey scaffold = GlobalKey();
-  Map<String, dynamic> localIDs;
+  var localIDs;
+  static List<dynamic> titles = <dynamic>['NOT FOUND'];
+  Icon switcher = Icon(Icons.add);
+  bool dropdownVisible = true;
+  bool textFieldVisible = false;
+  String ID;
+  String title = titles[0];
+  String altTitle;
+  String qty;
+  TextEditingController IDController = TextEditingController();
+  TextEditingController altTitleController = TextEditingController();
+  TextEditingController qtyController = TextEditingController();
   Future<void> downloadIfAble() async {
     ConnectivityResult connectivity = await Connectivity().checkConnectivity();
     bool wifi = connectivity == ConnectivityResult.wifi;
-    String localJSONString = await readText('ids', 'titles.json');
+    String localJSONString = await readText('docs', 'titles.json');
+    if (localJSONString == '') {
+      localJSONString = '{}';
+    }
     var localJSON = jsonDecode(localJSONString);
     if (wifi) {
       String globalJSONString = await makeGetRequest('https://api.myjson.com/bins/iobco');
       var globalJSON = jsonDecode(globalJSONString);
-      var mergedJSON;
       if (localJSON == null) {
-        writeText('ids', 'titles.json', globalJSONString, false);
+        writeText('docs', 'titles.json', globalJSONString, false);
         localIDs = globalJSON;
       } else {
-        mergedJSON = mergeMaps(localJSON, globalJSON);
-        localIDs = mergedJSON;
-        String mergedJSONString = jsonEncode(mergedJSON);
-        writeText('ids', 'titles.json', mergedJSONString, false);
-        makePutRequest('https://api.myjson.com/bins/iobco', mergedJSONString);
+        localIDs = mergeMaps(localJSON, globalJSON);
+        String localIDString = jsonEncode(localIDs);
+        writeText('docs', 'titles.json', localIDString, false);
+        makePutRequest('https://api.myjson.com/bins/iobco', localIDString);
       }
       Flushbar(
           title:  'Connected to Wi-Fi',
@@ -42,13 +54,13 @@ class CounterState extends State<Counter> {
           icon: IconTheme(data: IconThemeData(color: Color(0xFF209020)), child: Icon(Icons.check_circle))
       ).show(scaffold.currentContext);
     } else {
-      if (localJSON == null) {
+      print(localJSON);
+      if ((localJSON == null) || (localJSONString == '{}')) {
         String localJSONBackupString = await rootBundle.loadString('assets/backup_base.json');
         var localJSONBackup = jsonDecode(localJSONBackupString);
         localIDs = localJSONBackup;
-        writeText('ids', 'titles.json', localJSONBackupString, false);
+        writeText('docs', 'titles.json', localJSONBackupString, false);
       } else {
-        writeText('ids', 'titles.json', localJSONString, false);
         localIDs = localJSON;
       }
       Flushbar(
@@ -59,6 +71,108 @@ class CounterState extends State<Counter> {
       ).show(scaffold.currentContext);
     }
   }
+  void reset() {
+    setState(() {
+      IDController.clear();
+      altTitleController.clear();
+      qtyController.clear();
+      ID = '';
+      altTitle = '';
+      qty = '';
+      titles = ['NOT FOUND'];
+      title = titles[0];
+    });
+  }
+  Future<void> submitDialog() async {
+    return showDialog<void>(
+      context: scaffold.currentContext,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Submit data?'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('This information will be entered into the local inventory file. Are you sure it is correct?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('Yes'),
+              onPressed: () async {
+                Navigator.of(scaffold.currentContext).pop();
+                if (((ID == '') || (qty == '')) || (((title == 'NOT FOUND') && (dropdownVisible)) || (((altTitle == '') || (altTitle == null)) && (textFieldVisible)))) {
+                  Flushbar(
+                      title:  'Submit unsuccessful',
+                      message:  'Please fill out all required fields before submitting',
+                      duration:  Duration(seconds: 2),
+                      icon: IconTheme(data: IconThemeData(color: Color(0xFF902020)), child: Icon(Icons.error))
+                  ).show(scaffold.currentContext);
+                } else {
+                  submit();
+                }
+              },
+            ),
+            // This is just the "no" option.
+            // Leave it unchanged.
+            FlatButton(
+              child: Text('No'),
+              onPressed: () {
+                Navigator.of(scaffold.currentContext).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  void submit() async {
+    String titleToRecord;
+    if (textFieldVisible) {
+      titleToRecord = altTitle;
+      if (localIDs.containsKey(ID)) {
+        localIDs[ID].add(titleToRecord);
+      } else {
+        localIDs.addAll({ID: titleToRecord});
+      }
+      String localIDString = json.encode(localIDs);
+      writeText('docs', 'titles.json', localIDString, false);
+    } else {
+      titleToRecord = title;
+    }
+    String localINVString = await readText('docs', 'local_inv.json');
+    if (localINVString == '') {
+      localINVString = '{}';
+    }
+    var localINV = jsonDecode(localINVString);
+    if ((localINV == null) || (localINVString == '{}')) {
+      localINV = {ID: {titleToRecord: qty}};
+    } else {
+      if (localINV.containsKey(ID)) {
+        if (localINV[ID].containsKey(titleToRecord)) {
+          String already = localINV[ID][titleToRecord];
+          String newQTY = (int.parse(qty) + int.parse(already)).toString();
+          localINV[ID][titleToRecord] = newQTY;
+        } else {
+          localINV[ID].addAll({titleToRecord: qty});
+        }
+      } else {
+        localINV.addAll({ID: {titleToRecord: qty}});
+      }
+    }
+    String newLocalINVString = jsonEncode(localINV);
+    writeText('docs', 'local_inv.json', newLocalINVString, false);
+
+    String readLocalINVString = await readText('docs', 'local_inv.json');
+    Flushbar(
+        title:  'Submit successful',
+        message:  'Information saved to local inventory',
+        duration:  Duration(seconds: 2),
+        icon: IconTheme(data: IconThemeData(color: Color(0xFF209020)), child: Icon(Icons.error))
+    ).show(scaffold.currentContext);
+    reset();
+  }
   void initState() {
     downloadIfAble();
     super.initState();
@@ -67,5 +181,124 @@ class CounterState extends State<Counter> {
     return Scaffold(
       key: scaffold,
       backgroundColor: Colors.transparent,
+      body: Center(
+        child: ListView(
+          shrinkWrap: true,
+          children: <Widget>[
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                TextField(
+                    controller: IDController,
+                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'ID'
+                    ),
+                    onChanged: (String newValue) {
+                      setState(() {
+                        ID = newValue;
+                        titles = localIDs[ID];
+                        if (titles == null) {
+                          titles = ['NOT FOUND'];
+                        }
+                        title = titles[0];
+                      });
+                    },
+                    keyboardType: TextInputType.number
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Stack(
+                      children: <Widget>[
+                        Visibility(
+                          child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                value: title,
+                                onChanged: (String newValue) {
+                                  setState(() {
+                                    title = newValue;
+                                  });
+                                },
+                                items: titles.cast<String>().toList().map<DropdownMenuItem<String>>((String value) {
+                                  return DropdownMenuItem<String>(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                }).toList(),
+                              )
+                          ),
+                          visible: dropdownVisible,
+                        ),
+                        Container(
+                          child: Visibility(
+                            child: TextField(
+                                controller: altTitleController,
+                                textAlign: TextAlign.center,
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    hintText: 'Title'
+                                ),
+                                onChanged: (String newValue) {
+                                  setState(() {
+                                    altTitle = newValue;
+                                  });
+                                },
+                            ),
+                            visible: textFieldVisible,
+                          ),
+                          width: 100,
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: switcher,
+                      onPressed: () {
+                        setState(() {
+                          if (switcher.icon == Icons.add) {
+                            switcher = Icon(Icons.close);
+                            dropdownVisible = false;
+                            textFieldVisible = true;
+                          } else {
+                            switcher = Icon(Icons.add);
+                            dropdownVisible = true;
+                            textFieldVisible = false;
+                          }
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                TextField(
+                    textAlign: TextAlign.center,
+                    controller: qtyController,
+                    decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Quantity'
+                    ),
+                    onChanged: (String newValue) {
+                      setState(() {
+                        qty = newValue;
+                      });
+                    },
+                    keyboardType: TextInputType.number
+                ),
+                Container(
+                  width: 100,
+                  child: FlatButton(
+                    child: Text('Submit'),
+                    color: Color(0xFF202030),
+                    onPressed: submitDialog,
+                  ),
+                )
+              ],
+            ),
+          ],
+        ),
+      ),
     );
-  }}
+  }
+}

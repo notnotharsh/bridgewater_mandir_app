@@ -7,7 +7,7 @@ class Instructions extends StatefulWidget {
 }
 
 class InstructionsState extends State<Instructions> {
-  static List<String> instructions = ['1', '2', '3'];
+  static final List<String> instructions = ['1', '2', '3'];
   String text = instructions[0];
   int a = 0;
   void nextPage() {

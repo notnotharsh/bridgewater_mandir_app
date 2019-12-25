@@ -4,7 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'home.dart';
 
 void main() {
-  //debugPaintSizeEnabled = true;
+  // debugPaintSizeEnabled = true;
   runApp(MandirApp());
 }
 
