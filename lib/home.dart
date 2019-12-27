@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'instructions.dart';
 import 'counter.dart';
+import 'upload.dart';
 import 'settings.dart';
 
 class Home extends StatefulWidget {
@@ -13,7 +14,7 @@ class Home extends StatefulWidget {
 class HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3,
+      length: 4,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
@@ -22,6 +23,7 @@ class HomeState extends State<Home> {
             tabs: [
               Tab(text: "Instructions"),
               Tab(text: "Counter"),
+              Tab(text: "Upload"),
               Tab(text: "Settings")
             ],
           ),
@@ -31,6 +33,7 @@ class HomeState extends State<Home> {
           children: [
             Instructions(),
             Counter(),
+            Upload(),
             Settings()
           ],
         ),

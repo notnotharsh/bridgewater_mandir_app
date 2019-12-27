@@ -113,8 +113,6 @@ class CounterState extends State<Counter> {
                 }
               },
             ),
-            // This is just the "no" option.
-            // Leave it unchanged.
             FlatButton(
               child: Text('No'),
               onPressed: () {

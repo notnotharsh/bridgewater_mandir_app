@@ -33,8 +33,6 @@ class SettingsState extends State<Settings> {
                 resetInventory();
               },
             ),
-            // This is just the "no" option.
-            // Leave it unchanged.
             FlatButton(
               child: Text('No'),
               onPressed: () {
@@ -48,6 +46,12 @@ class SettingsState extends State<Settings> {
   }
   void resetInventory() {
     writeText('docs', 'local_inv.json', '', false);
+    Flushbar(
+        title:  'Reset successful',
+        message:  'Local inventory is now blank',
+        duration:  Duration(seconds: 2),
+        icon: IconTheme(data: IconThemeData(color: Color(0xFF209020)), child: Icon(Icons.check_circle))
+    ).show(scaffold.currentContext);
   }
   Widget build(BuildContext context) {
     return Scaffold(
