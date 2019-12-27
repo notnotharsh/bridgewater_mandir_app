@@ -54,8 +54,7 @@ class CounterState extends State<Counter> {
           icon: IconTheme(data: IconThemeData(color: Color(0xFF209020)), child: Icon(Icons.check_circle))
       ).show(scaffold.currentContext);
     } else {
-      print(localJSON);
-      if ((localJSON == null) || (localJSONString == '{}')) {
+      if ((localJSON == null) || (localJSON.length == 0)) {
         String localJSONBackupString = await rootBundle.loadString('assets/backup_base.json');
         var localJSONBackup = jsonDecode(localJSONBackupString);
         localIDs = localJSONBackup;
@@ -102,7 +101,7 @@ class CounterState extends State<Counter> {
               child: Text('Yes'),
               onPressed: () async {
                 Navigator.of(scaffold.currentContext).pop();
-                if (((ID == '') || (qty == '')) || (((title == 'NOT FOUND') && (dropdownVisible)) || (((altTitle == '') || (altTitle == null)) && (textFieldVisible)))) {
+                if ((((ID == '') || (ID == null)) || ((qty == '') || (qty == null))) || (((title == 'NOT FOUND') && (dropdownVisible)) || (((altTitle == '') || (altTitle == null)) && (textFieldVisible)))) {
                   Flushbar(
                       title:  'Submit unsuccessful',
                       message:  'Please fill out all required fields before submitting',
@@ -134,7 +133,7 @@ class CounterState extends State<Counter> {
       if (localIDs.containsKey(ID)) {
         localIDs[ID].add(titleToRecord);
       } else {
-        localIDs.addAll({ID: titleToRecord});
+        localIDs.addAll({ID: [titleToRecord]});
       }
       String localIDString = json.encode(localIDs);
       writeText('docs', 'titles.json', localIDString, false);
@@ -146,7 +145,7 @@ class CounterState extends State<Counter> {
       localINVString = '{}';
     }
     var localINV = jsonDecode(localINVString);
-    if ((localINV == null) || (localINVString == '{}')) {
+    if ((localINV == null) || (localINV.length == 0)) {
       localINV = {ID: {titleToRecord: qty}};
     } else {
       if (localINV.containsKey(ID)) {
@@ -163,13 +162,11 @@ class CounterState extends State<Counter> {
     }
     String newLocalINVString = jsonEncode(localINV);
     writeText('docs', 'local_inv.json', newLocalINVString, false);
-
-    String readLocalINVString = await readText('docs', 'local_inv.json');
     Flushbar(
         title:  'Submit successful',
         message:  'Information saved to local inventory',
         duration:  Duration(seconds: 2),
-        icon: IconTheme(data: IconThemeData(color: Color(0xFF209020)), child: Icon(Icons.error))
+        icon: IconTheme(data: IconThemeData(color: Color(0xFF209020)), child: Icon(Icons.check_circle))
     ).show(scaffold.currentContext);
     reset();
   }
