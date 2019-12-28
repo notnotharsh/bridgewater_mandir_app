@@ -12,7 +12,7 @@ class Upload extends StatefulWidget {
 
 class UploadState extends State<Upload> {
   GlobalKey scaffold = GlobalKey();
-  static List<dynamic> sheets = <dynamic>['Spare'];
+  static List<dynamic> sheets = <dynamic>['App'];
   bool wifi = false;
   void determineConnection() async {
     ConnectivityResult connectivity = await Connectivity().checkConnectivity();
@@ -25,6 +25,7 @@ class UploadState extends State<Upload> {
     });
   }
   Widget build(BuildContext context) {
+    determineConnection();
     if (wifi) {
       return Scaffold(
         key: scaffold,
@@ -36,7 +37,9 @@ class UploadState extends State<Upload> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[],
+                children: <Widget>[
+                  Padding(padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 48.0), child: Center(child: Text('no u', textAlign: TextAlign.center)))
+                ],
               ),
             ],
           ),
@@ -54,7 +57,7 @@ class UploadState extends State<Upload> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Expanded(child: Padding(padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 48.0), child: Center(child: Text('Sorry, but you cannot upload data at this time, as you are either connected to a mobile network and haven\'t allowed operations on this app over mobile data (you can do this in Settings) or you are just not connected to the internet.', textAlign: TextAlign.center))))
+                  Padding(padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 48.0), child: Center(child: Text('Sorry, but you cannot upload data at this time, as you are either connected to a mobile network and haven\'t allowed operations on this app over mobile data (you can do this in Settings) or you are just not connected to the internet.', textAlign: TextAlign.center)))
                 ],
               ),
             ],
