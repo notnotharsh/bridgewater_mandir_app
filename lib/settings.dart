@@ -11,6 +11,7 @@ class Settings extends StatefulWidget {
 
 class SettingsState extends State<Settings> {
   GlobalKey scaffold = GlobalKey();
+  bool allowMobileData = false;
   Future<void> resetInventoryDialog() async {
     return showDialog<void>(
       context: scaffold.currentContext,
@@ -53,6 +54,20 @@ class SettingsState extends State<Settings> {
         icon: IconTheme(data: IconThemeData(color: Color(0xFF209020)), child: Icon(Icons.check_circle))
     ).show(scaffold.currentContext);
   }
+  void updateMobile() async {
+    String result = await readText('logs', 'mobile.txt');
+    setState(() {
+      allowMobileData = result == 'true';
+      if (allowMobileData == null) {
+        allowMobileData = false;
+      }
+    });
+    writeText('logs', 'mobile.txt', allowMobileData.toString(), false);
+  }
+  void initState() {
+    updateMobile();
+    super.initState();
+  }
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffold,
@@ -78,6 +93,26 @@ class SettingsState extends State<Settings> {
                       color: Color(0xFF202030),
                       onPressed: resetInventoryDialog,
                     ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Padding(
+                      child: Text('Allow connections over mobile data?'),
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                    ),
+                    Switch(
+                      value: allowMobileData,
+                      activeColor: Color(0xFFFFFFFF),
+                      onChanged: (bool newValue) {
+                        setState(() {
+                          allowMobileData = newValue;
+                          writeText('logs', 'mobile.txt', allowMobileData.toString(), false);
+                        });
+                      },
+                    )
                   ],
                 ),
               ],

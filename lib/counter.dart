@@ -29,7 +29,11 @@ class CounterState extends State<Counter> {
   TextEditingController qtyController = TextEditingController();
   Future<void> downloadIfAble() async {
     ConnectivityResult connectivity = await Connectivity().checkConnectivity();
-    bool wifi = connectivity == ConnectivityResult.wifi;
+    bool allowMobile = (await readText('logs', 'mobile.txt')) == 'true';
+    if (allowMobile == null) {
+      allowMobile = false;
+    }
+    bool wifi = ((connectivity == ConnectivityResult.wifi) || ((connectivity == ConnectivityResult.mobile) && (allowMobile)));
     String localJSONString = await readText('docs', 'titles.json');
     if (localJSONString == '') {
       localJSONString = '{}';
@@ -48,7 +52,7 @@ class CounterState extends State<Counter> {
         makePutRequest('https://api.myjson.com/bins/iobco', localIDString);
       }
       Flushbar(
-          title:  'Connected to Wi-Fi',
+          title:  'Acceptable connection confirmed',
           message:  'Updating ID map',
           duration:  Duration(seconds: 2),
           icon: IconTheme(data: IconThemeData(color: Color(0xFF209020)), child: Icon(Icons.check_circle))
