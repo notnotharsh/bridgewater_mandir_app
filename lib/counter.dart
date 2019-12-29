@@ -27,6 +27,13 @@ class CounterState extends State<Counter> {
   TextEditingController IDController = TextEditingController();
   TextEditingController altTitleController = TextEditingController();
   TextEditingController qtyController = TextEditingController();
+  bool isNumeric(String s) {
+    if(s == null) {
+      return false;
+    }
+    return double.parse(s, (e) => null) != null;
+  }
+  bool isIntegral(num x) => x is int || x.truncateToDouble() == x;
   Future<void> downloadIfAble() async {
     ConnectivityResult connectivity = await Connectivity().checkConnectivity();
     bool allowMobile = (await readText('logs', 'mobile.txt')) == 'true';
@@ -112,8 +119,15 @@ class CounterState extends State<Counter> {
                       duration:  Duration(seconds: 2),
                       icon: IconTheme(data: IconThemeData(color: Color(0xFF902020)), child: Icon(Icons.error))
                   ).show(scaffold.currentContext);
-                } else {
+                } else if ((isNumeric(qty)) && ((isIntegral(double.parse(qty))) && (int.parse(qty) > 0))) {
                   submit();
+                } else {
+                  Flushbar(
+                      title:  'Submit unsuccessful',
+                      message:  'Please enter a valid quantity',
+                      duration:  Duration(seconds: 2),
+                      icon: IconTheme(data: IconThemeData(color: Color(0xFF902020)), child: Icon(Icons.error))
+                  ).show(scaffold.currentContext);
                 }
               },
             ),
