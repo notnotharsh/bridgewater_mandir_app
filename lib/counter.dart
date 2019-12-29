@@ -112,7 +112,7 @@ class CounterState extends State<Counter> {
               child: Text('Yes'),
               onPressed: () async {
                 Navigator.of(scaffold.currentContext).pop();
-                if ((((ID == '') || (ID == null)) || ((qty == '') || (qty == null))) || (((title == 'NOT FOUND') && (dropdownVisible)) || (((altTitle == '') || (altTitle == null)) && (textFieldVisible)))) {
+                if ((((ID == null) || (ID == '')) || ((qty == null) || (qty == ''))) || (((title == 'NOT FOUND') && (dropdownVisible)) || ((((altTitle == null) || (altTitle.replaceAll(new RegExp(r' '), '').length == 0)) || (altTitle == '')) && (textFieldVisible)))) {
                   Flushbar(
                       title:  'Submit unsuccessful',
                       message:  'Please fill out all required fields before submitting',
