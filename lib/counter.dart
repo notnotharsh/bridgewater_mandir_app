@@ -146,9 +146,10 @@ class CounterState extends State<Counter> {
     String titleToRecord;
     if (textFieldVisible) {
       titleToRecord = altTitle;
-      if (localIDs.containsKey(ID)) {
+      print(localIDs[ID]);
+      if ((localIDs.containsKey(ID)) && !(localIDs[ID].contains(titleToRecord))) {
         localIDs[ID].add(titleToRecord);
-      } else {
+      } else if (!(localIDs.containsKey(ID))) {
         localIDs.addAll({ID: [titleToRecord]});
       }
       String localIDString = json.encode(localIDs);
@@ -187,6 +188,9 @@ class CounterState extends State<Counter> {
     reset();
   }
   void initState() {
+    ID = '';
+    titles = ['NOT FOUND'];
+    title = 'NOT FOUND';
     downloadIfAble();
     super.initState();
   }
