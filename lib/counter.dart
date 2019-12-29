@@ -74,7 +74,7 @@ class CounterState extends State<Counter> {
         localIDs = localJSON;
       }
       Flushbar(
-          title:  'Not connected to Wi-Fi',
+          title:  'No acceptable connection confirmed',
           message:  'Will update ID map later',
           duration:  Duration(seconds: 2),
           icon: IconTheme(data: IconThemeData(color: Color(0xFF902020)), child: Icon(Icons.error))
