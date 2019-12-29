@@ -28,10 +28,10 @@ class CounterState extends State<Counter> {
   TextEditingController altTitleController = TextEditingController();
   TextEditingController qtyController = TextEditingController();
   bool isNumeric(String s) {
-    if(s == null) {
+    if (s == null) {
       return false;
     }
-    return double.parse(s, (e) => null) != null;
+    return int.tryParse(s) is int;
   }
   bool isIntegral(num x) => x is int || x.truncateToDouble() == x;
   Future<void> downloadIfAble() async {
@@ -119,7 +119,7 @@ class CounterState extends State<Counter> {
                       duration:  Duration(seconds: 2),
                       icon: IconTheme(data: IconThemeData(color: Color(0xFF902020)), child: Icon(Icons.error))
                   ).show(scaffold.currentContext);
-                } else if ((isNumeric(qty)) && ((isIntegral(double.parse(qty))) && (int.parse(qty) > 0))) {
+                } else if ((isNumeric(qty)) && (int.parse(qty) > 0)) {
                   submit();
                 } else {
                   Flushbar(
