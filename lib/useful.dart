@@ -75,27 +75,27 @@ Future<String> readText(String directory, String filename) async {
   }
 }
 
-Future<String> makeGetRequest(String url) async {
+Future<String> makeGetRequest(String url, String apikey) async {
   try {
-    http.Response res = await http.get(Uri.encodeFull(url));
+    http.Response res = await http.get(Uri.encodeFull(url), headers: {"authorization": "token $apikey"});
     return res.body;
   } on SocketException {
     return "";
   }
 }
 
-Future<String> makePostRequest(String url, String json) async {
+Future<String> makePostRequest(String url, String json, String apikey) async {
   try {
-    http.Response res = await http.post(Uri.encodeFull(url), headers: {"Content-type": "application/json"}, body: json);
+    http.Response res = await http.post(Uri.encodeFull(url), headers: {"Content-type": "application/json", "authorization": "token $apikey"}, body: json);
     return res.body;
   } on SocketException {
     return "";
   }
 }
 
-Future<String> makePutRequest(String url, String json) async {
+Future<String> makePutRequest(String url, String json, String apikey) async {
   try {
-    http.Response res = await http.put(Uri.encodeFull(url), headers: {"Content-type": "application/json"}, body: json);
+    http.Response res = await http.put(Uri.encodeFull(url), headers: {"Content-type": "application/json", "authorization": "token $apikey"}, body: json);
     return res.body;
   } on SocketException {
     return "";

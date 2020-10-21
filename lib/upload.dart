@@ -33,7 +33,7 @@ class UploadState extends State<Upload> {
     super.initState();
   }
   void setTitles() async {
-    String sheetsString = await makeGetRequest('https://api.myjson.com/bins/1d7urg');
+    String sheetsString = await makeGetRequest('https://jsonbin.org/notnotharsh/sheets', 'a57f6f6c-08aa-4ca1-ba65-17c19015734f');
     var sheetsMap = jsonDecode(sheetsString);
     sheets = sheetsMap['sheets'];
   }
@@ -74,7 +74,7 @@ class UploadState extends State<Upload> {
     try {
       String data = await readText('docs', 'local_inv.json');
       String url = 'https://docs.google.com/forms/d/e/1FAIpQLScgUpCf6tYYjwyrvUV_aCWjz78exmaLE_OSnpFbKpkuT3s12g/formResponse?usp=pp_url&entry.958111828=$sheet&entry.2127219464=$data&submit=Submit';
-      makeGetRequest(url);
+      makeGetRequest(url, 'a57f6f6c-08aa-4ca1-ba65-17c19015734f');
       writeText('docs', 'local_inv.json', '', false);
       Flushbar(
           title:  'Submit successful',

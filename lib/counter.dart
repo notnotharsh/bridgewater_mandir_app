@@ -47,7 +47,7 @@ class CounterState extends State<Counter> {
     }
     var localJSON = jsonDecode(localJSONString);
     if (wifi) {
-      String globalJSONString = await makeGetRequest('https://api.myjson.com/bins/iobco');
+      String globalJSONString = await makeGetRequest('https://jsonbin.org/notnotharsh/mandir', 'a57f6f6c-08aa-4ca1-ba65-17c19015734f');
       var globalJSON = jsonDecode(globalJSONString);
       if (localJSON == null) {
         writeText('docs', 'titles.json', globalJSONString, false);
@@ -56,7 +56,7 @@ class CounterState extends State<Counter> {
         localIDs = mergeMaps(localJSON, globalJSON);
         String localIDString = jsonEncode(localIDs);
         writeText('docs', 'titles.json', localIDString, false);
-        makePutRequest('https://api.myjson.com/bins/iobco', localIDString);
+        makePostRequest('https://jsonbin.org/notnotharsh/mandir', localIDString, 'a57f6f6c-08aa-4ca1-ba65-17c19015734f');
       }
       Flushbar(
           title:  'Acceptable connection confirmed',
