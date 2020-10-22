@@ -24,8 +24,8 @@ Distribution
 
 Screenshots
 ------
-<img src="docs/images/mobileform.png" alt="drawing" width="42.5%" style="float: left; margin-left: 5%; margin-right: 2.5%; margin-bottom: 30px;"/>
-<img src="docs/images/uploader.png" alt="drawing" width="42.5%" style="float: left; margin-left: 2.5%; margin-right: 5%; margin-bottom: 30px;"/>
+<img src="docs/images/mobileform.png" alt="drawing" width="40%" style="float: left; margin-left: 5%; margin-right: 2.5%; margin-bottom: 30px;"/>
+<img src="docs/images/uploader.png" alt="drawing" width="40%" style="float: left; margin-left: 2.5%; margin-right: 5%; margin-bottom: 30px;"/>
 
 Usage
 ------
