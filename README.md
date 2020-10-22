@@ -20,7 +20,7 @@ Distribution
 ------
 
   * The APK file at `build/app/outputs/apk/release/app-release.apk` can be shared anywhere, through Drive or e-mail.
-  * For iOS, compress the generated app into an IPA file. Using a service such as [Diawi](https://diawi.com), it may be possible to distribute said scouting app without necessarily connecting every device to a Mac. This depends on a number of factors, such as the size of the app, how many times it is to be downloaded, etc. If there is a better way to install iOS apps, please let me know!
+  * For iOS, compress the generated app into an IPA file. Using a service such as [Diawi](https://diawi.com), it may be possible to distribute the app without necessarily connecting every device to a Mac. This depends on a number of factors, such as the size of the app, how many times it is to be downloaded, etc. If there is a better way to install iOS apps, please let me know!
 
 Screenshots
 ------
