@@ -1,5 +1,4 @@
 # Sri Venkateswara Temple App
-------
 
 This app exists so that volunteers at the gift shop of the Sri Venkateswara Temple (Balaji Mandir) in Bridgewater, NJ, can successfully and efficiently update the inventories of the many items sold. Given that the gift shop has an unconventional labeling system and no Internet connection, the best choice for this task is a mobile application. This application runs on Flutter and can be deployed to Android or iOS.
 
