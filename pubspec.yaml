@@ -27,11 +27,17 @@ dependencies:
   path_provider: ^1.5.1
   http: ^0.12.0+2
   flushbar: ^1.10.4
-  flutter_launcher_icons: ^0.7.4
+  flutter_launcher_icons: ^0.8.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path_ios: "assets/ic_launcher_round.png"
+  image_path_android: "assets/ic_launcher_round.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
