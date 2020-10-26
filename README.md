@@ -45,7 +45,7 @@ All of these instructions for usage are also included in the app itself.
 ### Uploading
 
   * If you have a valid internet connection (Wi-Fi or mobile data should you allow it in the Settings screen), you should be able to access the Upload screen.
-  * Please duplicate the Template sheet on the Google spreadsheet associated with the app (at [bit.ly/mandirgiftshopsheet](bit.ly/mandirgiftshopsheet)) prior to uploading data.
+  * Please duplicate the Template sheet on the Google spreadsheet associated with the app (at [bit.ly/mandirgiftshopsheet](https://bit.ly/mandirgiftshopsheet)) prior to uploading data.
   * After doing this, you can choose the sheet you just created, and the data from your local inventory should upload to that sheet.
   * The spreadsheet should resemble the following (if done correctly, volunteers can record the entire set of inventories into one or multiple spreadsheets without writing or typing a single word): <img alt="Spreadsheet" src="docs/images/spreadsheet.png" style="margin-top: 10px;"/>
 
